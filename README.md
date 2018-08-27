@@ -1,4 +1,9 @@
-# A-small-ml-library
-This repo contains implementation of popular machine learning algorithms. It provides interface similar to scikit-learn.
-This library aims to provide flexibility for experiment with ML algorithms. (This is still in progress, more algorithms will be added soon.)
-Models can be trained using "fit" function. And to predict values "predict" can be used.
+# flexML
+This is small machine learning library containing implementation of popular
+machine learning algorithms. It provides similar interface as scikit-learn.
+
+Find the documentations and tutorial at [AI Vigyan](http://aivigyan.com/)
+
+List of models in this library:
+1. Linear Regression
+2. Logistic Regression
