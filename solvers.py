@@ -6,7 +6,7 @@ Various optimization algorithms to find best parameters
 import numpy as np
 
 
-def gradient_descent(X, y, alpha, max_iter, stopping, cost_func):
+def gradient_descent(X, y, alpha, max_iter, stopping, cost_func, h):
     """
     Computer parameters with minnimum cost
 
@@ -29,8 +29,11 @@ def gradient_descent(X, y, alpha, max_iter, stopping, cost_func):
     stopping : float
         Stopping criteria i.e epsilon value
 
-    cost_func, function
+    cost_func : function
         Function to evaluate cost or loss function
+
+    h : function
+        hypotheses function for model
 
     Returns
     -------
@@ -40,18 +43,19 @@ def gradient_descent(X, y, alpha, max_iter, stopping, cost_func):
 
     # Initialize weights with zeros
     weights = np.zeros(X.shape[1])
-    m = len(X)
+    m = X.shape[0]
     # Calculate initial cost
     J = cost_func(X, y, weights)
 
     for i in range(max_iter):
         # Difference b/w estimate and actual value
-        loss = y - X.dot(weights)
+        loss = y - h(X, weights)
         # Update weights
         updated_weights = weights + (alpha / m) * X.T.dot(loss)
 
         # If converging, update the original weights
         e = cost_func(X, y, updated_weights)
+
         if J > e:
             weights = updated_weights
             # Increase learning rate by 1% for faster learning
