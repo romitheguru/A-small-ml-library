@@ -35,15 +35,15 @@ class LinearRegression(object):
         self._stopping = ep
         self._max_iter = max_iter
 
-    def _h(self, X, weights):
+    def __h(self, X, weights):
         return X.dot(weights)
 
-    def _cost(self, X, y, weights):
+    def __cost(self, X, y, weights):
         m = X.shape[0]
-        h = self._h(X, weights)
+        h = self.__h(X, weights)
         return np.sum((h - y) ** 2) / (2 * m)
 
-    def _add_intercept(self, X):
+    def __add_intercept(self, X):
         X = np.array(X)
         if len(X.shape) == 1:
             X = X.reshape((-1, 1))
@@ -60,10 +60,10 @@ class LinearRegression(object):
 
         y: Labels for the corresponding data.
         """
-        X = self._add_intercept(X)
+        X = self.__add_intercept(X)
         y = np.array(y)
         self._weights = gradient_descent(X, y, self._alpha, self._max_iter,
-                                         self._stopping, self._cost, self._h)
+                                         self._stopping, self.__cost, self.__h)
 
     def predict(self, X):
         """
@@ -73,5 +73,5 @@ class LinearRegression(object):
         X_test: Data for which target needs to be predicted.
         """
         assert self._weights is not None, "Model needs to be trained"
-        X = self._add_intercept(X)
-        return self._h(X, self._weights)
+        X = self.__add_intercept(X)
+        return self.__h(X, self._weights)
