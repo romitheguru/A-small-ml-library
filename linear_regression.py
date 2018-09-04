@@ -29,22 +29,26 @@ class LinearRegression(object):
         Default value is 0.0001
     """
 
-    def __init__(self, alpha=0.0001, max_iter=100000, ep=0.0001):
+    def __init__(self, alpha=0.01, max_iter=100000, ep=0.00001):
         self._weights = None
         self._alpha = alpha
         self._stopping = ep
         self._max_iter = max_iter
 
-    def _cost(self, X, y, weights):
-        m = len(X)
-        return np.sum((X.dot(weights) - y) ** 2) / (2 * m)
+    def _h(self, X, weights):
+        return X.dot(weights)
 
-    def _transform_data(self, data):
-        data = np.array(data)
-        if len(data.shape) == 1:
-            data = data.reshape((-1, 1))
-        ones = np.ones((len(data), 1))
-        return np.concatenate((ones, data), axis=1)
+    def _cost(self, X, y, weights):
+        m = X.shape[0]
+        h = self._h(X, weights)
+        return np.sum((h - y) ** 2) / (2 * m)
+
+    def _add_intercept(self, X):
+        X = np.array(X)
+        if len(X.shape) == 1:
+            X = X.reshape((-1, 1))
+        ones = np.ones((X.shape[0], 1))
+        return np.concatenate((ones, X), axis=1)
 
     def fit(self, X, y):
         """
@@ -56,12 +60,12 @@ class LinearRegression(object):
 
         y: Labels for the corresponding data.
         """
-        X = self._transform_data(X)
+        X = self._add_intercept(X)
         y = np.array(y)
         self._weights = gradient_descent(X, y, self._alpha, self._max_iter,
-                                         self._stopping, self._cost)
+                                         self._stopping, self._cost, self._h)
 
-    def predict(self, X_test):
+    def predict(self, X):
         """
         Function to predict the values given test data.
 
@@ -69,27 +73,5 @@ class LinearRegression(object):
         X_test: Data for which target needs to be predicted.
         """
         assert self._weights is not None, "Model needs to be trained"
-        X_test = self._transform_data(X_test)
-        return X_test.dot(self._weights)
-
-    def model_param(self):
-        """
-        This will return the model learning parameters.
-        """
-        assert self._weights is not None, "Model needs to be trained"
-        return self._weights
-
-    def residuals(self, X, y):
-        """
-        This function will calculate the cost of fitting
-        linear model on given data. Cost is calculated as
-        the average of error-squired.
-
-        Arguments:
-        X: Data for model validation.
-        y: Correct labels for corresponding data.
-        """
-        assert self._weights is not None, "Model needs to be trained"
-        predicted_y = self.predict(X)
-        errors = predicted_y - y
-        return np.sum(np.power(errors, 2)) / (2 * len(X))
+        X = self._add_intercept(X)
+        return self._h(X, self._weights)
