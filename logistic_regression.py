@@ -13,7 +13,9 @@ class LogisticRegression(object):
     -------
     fit: Takes input data and target variable.
 
-    predict: Takes test data for which predictions needs to be made.
+    predict: Takes input data for which predictions needs to be made.
+
+    predict_proba: Take input data and returns predicted probabilities
 
     Parameters
     ----------
@@ -65,8 +67,12 @@ class LogisticRegression(object):
         """
         X = self.__add_intercept(X)
         y = np.array(y)
-        self.__weights = gradient_descent(X, y, self.__alpha, self.__max_iter,
-                                          self.__stopping, self.__cost, self.__h)
+        self.__weights = gradient_descent(X, y,
+                                          self.__alpha,
+                                          self.__max_iter,
+                                          self.__stopping,
+                                          self.__cost,
+                                          self.__h)
 
     def predict_proba(self, X):
         """
